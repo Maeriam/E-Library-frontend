@@ -55,7 +55,7 @@ export default function HomePage() {
           {/* CTA Buttons */}
           <div className="mt-8 flex justify-center gap-4 flex-wrap">
             <Link
-              href="/user/signup"
+              href="/user/register"
               className="bg-white text-gray-700 px-6 py-3 rounded-full shadow hover:bg-gray-100"
             >
               Join Now
@@ -127,10 +127,35 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Featured Books */}
+<section>
+  {/* Featured Books */}
 
       <FeaturedBooks />
+</section>
+      
+{/* About Us Section */}
+<section className="py-16 bg-white">
+  <div className="max-w-6xl mx-auto px-4 text-center">
+    <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
+      About Us
+    </h2>
+    <p className="text-gray-600 leading-relaxed mb-8">
+      We are passionate about connecting readers with the books they love.
+      From timeless classics to modern bestsellers, our library offers a
+      diverse range of materials for every kind of reader. Learn more about
+      our mission, values, and team.
+    </p>
+    <Link
+      href="/about"
+      className="inline-block bg-black text-white px-6 py-3 rounded-full shadow hover:bg-gray-800 transition-colors"
+    >
+      Learn More
+    </Link>
+  </div>
+</section>
+
+
+
     </div>
   );
 }
