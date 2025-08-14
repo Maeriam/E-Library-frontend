@@ -25,7 +25,7 @@ export default function Navbar() {
     { href: "/books", label: "Books" },
     { href: "/contact", label: "Contact Us" },
     { href: "/user/login", label: "User Login" },
-    { href: "/user/signup", label: "User Signup" },
+    { href: "/user/register", label: "User Signup" },
     { href: "/admin/login", label: "Admin Login" },
   ];
 

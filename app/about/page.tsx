@@ -68,15 +68,15 @@ export default function AboutPage() {
       <section className="py-16 max-w-6xl mx-auto px-6 text-center">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-3xl font-bold text-indigo-600 mb-2">10k+</h3>
+            <h3 className="text-3xl font-bold text-gray-600 mb-2">10k+</h3>
             <p className="text-gray-700">Books Available</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-3xl font-bold text-indigo-600 mb-2">5k+</h3>
+            <h3 className="text-3xl font-bold text-gray-600 mb-2">5k+</h3>
             <p className="text-gray-700">Active Members</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-3xl font-bold text-indigo-600 mb-2">200+</h3>
+            <h3 className="text-3xl font-bold text-gray-600 mb-2">200+</h3>
             <p className="text-gray-700">Authors & Contributors</p>
           </div>
         </div>

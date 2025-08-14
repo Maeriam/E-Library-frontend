@@ -26,6 +26,12 @@ export default function FeaturedBooks() {
       author: "James Clear",
       img: "https://i.pinimg.com/736x/4d/4d/81/4d4d817b99b0767ae2ee8ecaaf128a55.jpg",
     },
+    {
+      id: 5,
+      title: "Sapiens",
+      author: "Yuval Noah Harari",
+      img: "https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=800&auto=format&fit=crop",
+    },
   ];
 
   return (
@@ -35,23 +41,23 @@ export default function FeaturedBooks() {
           Featured Books
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4">
           {books.map((book) => (
             <div
               key={book.id}
-              className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+              className="flex-none w-64 sm:w-56 xs:w-48 bg-white rounded-lg shadow hover:shadow-xl transition-all duration-300 overflow-hidden"
             >
               <img
                 src={book.img}
                 alt={book.title}
-                className="w-full h-60 object-cover"
+                className="w-full h-72 sm:h-60 xs:h-56 object-cover"
               />
               <div className="p-4">
                 <h3 className="text-lg font-semibold">{book.title}</h3>
                 <p className="text-sm text-gray-600">{book.author}</p>
                 <Link
                   href={`/books/${book.id}`}
-                  className="text-black-600 hover:underline mt-3 inline-block font-medium"
+                  className="text-gray-700 hover:underline mt-3 inline-block font-medium"
                 >
                   View Details →
                 </Link>
@@ -60,6 +66,16 @@ export default function FeaturedBooks() {
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 }
