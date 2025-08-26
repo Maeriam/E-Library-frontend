@@ -1,106 +1,114 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import Link from "next/link";
 import axios from "axios";
-import { Book } from "@/app/types/books"; 
+import { HiOutlineBookOpen, HiOutlineDownload } from "react-icons/hi";
+import SimilarBooks from "@/components/Sections/SimilarBooksSection/page";
 
-export const api = axios.create({
-  baseURL: "http://127.0.0.1:8000", 
-});
+interface Book {
+  _id: string;
+  title: string;
+  author: string;
+  publisher: string;
+  cover_image?: string;
+  category_name: string;
+  category_id: string;
+  file?: string;
+  downloadable: boolean;
+}
 
 export default function BookDetailsPage() {
-  const params = useParams();
+  const { id } = useParams();
   const router = useRouter();
-  const id = params.id as string;
-
   const [book, setBook] = useState<Book | null>(null);
   const [similarBooks, setSimilarBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchBookDetails = async () => {
+    const fetchBook = async () => {
       try {
-       
-        const res = await api.get<Book>(`/books/${id}`);
+        const res = await axios.get<Book>(`http://127.0.0.1:8000/books/${id}`);
         setBook(res.data);
 
-        
-        const allRes = await api.get<Book[]>(`/books`);
-        const similar = allRes.data.filter(
-          (b) => b.category === res.data.category && b.id !== res.data.id
+        const allBooks = await axios.get<Book[]>(`http://127.0.0.1:8000/books`);
+        const similar = allBooks.data.filter(
+          (b) => b.category_id === res.data.category_id && b._id !== res.data._id
         );
         setSimilarBooks(similar);
       } catch (err) {
-        console.error("Failed to fetch book details:", err);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching book", err);
       }
     };
-
-    fetchBookDetails();
+    fetchBook();
   }, [id]);
 
-  if (loading) return <div className="text-center py-20">Loading...</div>;
-  if (!book) return <div className="text-center py-20">Book not found</div>;
+  if (!book) return <p className="p-6 text-center text-white">Loading...</p>;
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-16">
-      {/* Book Info */}
-      <div className="flex flex-col md:flex-row gap-8">
-        <img
-          src={book.cover_image || "https://via.placeholder.com/300x400?text=No+Image"}
-          alt={book.title}
-          className="w-full md:w-64 h-80 object-cover rounded-lg shadow"
-        />
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold mb-2">{book.title}</h1>
-          <p className="text-gray-700 mb-2">By {book.author}</p>
-          <p className="text-gray-500 mb-4">Publisher: {book.publisher}</p>
-          <p className="text-gray-600 mb-6">
-            {book.downloadable
-              ? "This book is available for download."
-              : "This book is not available for download."}
-          </p>
+    <div className="relative min-h-screen bg-gray-900 text-white">
+      {/* Hero background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${book.cover_image || "/placeholder.png"})`,
+        }}
+      />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
 
-          <button className="bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 mr-4">
-            Borrow Book
-          </button>
-          <button
-            onClick={() => router.back()}
-            className="bg-gray-200 text-gray-800 px-6 py-3 rounded hover:bg-gray-300"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
+      {/* Book Info Card */}
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-20">
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-6 flex flex-col md:flex-row gap-8 items-center">
+          <img
+            src={book.cover_image || "/placeholder.png"}
+            alt={book.title}
+            className="w-full md:w-64 h-80 object-cover rounded-2xl shadow"
+          />
+          <div className="flex-1 text-white">
+            <h1 className="text-3xl md:text-4xl font-bold">{book.title}</h1>
+            <p className="text-lg text-gray-300 mt-1">By {book.author}</p>
+            <p className="text-sm text-gray-400 mt-1">Publisher: {book.publisher}</p>
+            <p className="text-sm italic text-gray-400 mt-1">Category: {book.category_name}</p>
 
-      {/* Similar Books */}
-      {similarBooks.length > 0 && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">Similar Books</h2>
-          <div className="flex gap-6 overflow-x-auto pb-4">
-            {similarBooks.map((b) => (
-              <Link
-                key={b.id}
-                href={`/books/${b.id}`}
-                className="flex-none w-48 bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
-              >
-                <img
-                  src={b.cover_image || "https://via.placeholder.com/300x400?text=No+Image"}
-                  alt={b.title}
-                  className="w-full h-56 object-cover"
-                />
-                <div className="p-3">
-                  <h3 className="text-lg font-semibold">{b.title}</h3>
-                  <p className="text-sm text-gray-600">{b.author}</p>
-                </div>
-              </Link>
-            ))}
+            {/* Action Buttons */}
+            <div className="mt-4 flex gap-3 flex-wrap">
+              {book.file && (
+                <a
+                  href={book.file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+                >
+                  <HiOutlineBookOpen className="w-5 h-5" />
+                  Read Online
+                </a>
+              )}
+
+              {book.downloadable && book.file && (
+                <a
+                  href={book.file}
+                  download
+                  className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+                >
+                  <HiOutlineDownload className="w-5 h-5" />
+                  Download
+                </a>
+              )}
+            </div>
+
+            <button
+              onClick={() => router.back()}
+              className="mt-6 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
+            >
+              ← Go Back
+            </button>
           </div>
         </div>
-      )}
+
+        {/* Similar Books */}
+        <section className="mt-10">
+          <SimilarBooks similarBooks={similarBooks} />
+        </section>
+      </div>
     </div>
   );
 }

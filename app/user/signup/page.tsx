@@ -1,10 +1,10 @@
 import React from 'react'
-import ResgisterForm from '@/components/forms/ResgisterForm'
+import SignupForm from "@/components/authforms/SignupForm";
 
 function page() {
   return (
     <div>
-        <ResgisterForm/>
+        <SignupForm/>
     </div>
   )
 }

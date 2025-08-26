@@ -1,7 +1,10 @@
 import React from 'react'
+import Books from "@/components/BooksList/page";
 
 export default function page() {
   return (
-    <div>books page</div>
+    <div>
+      <Books/>
+    </div>
   )
 }

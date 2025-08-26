@@ -1,5 +1,5 @@
 import React from 'react'
-import Books from '@/components/Books/page'
+import Books from '@/components/BooksList/page'
 
 function page() {
   return (

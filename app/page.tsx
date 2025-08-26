@@ -2,7 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import FeaturedBooks from "@/components/BookCard/page";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion"; 
+import CategoriesSection from "../components/Sections/CategoriesSection/page";
+import TitledBooks from "../components/Sections/TitledBooks/page";
+import AboutSection from "../components/Sections/AboutSection/page";
+
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+};
 
 export default function HomePage() {
   const heroImages = [
@@ -12,6 +22,15 @@ export default function HomePage() {
   ];
 
   const [currentImage, setCurrentImage] = useState(0);
+  const [query, setQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/books?search=${encodeURIComponent(query)}`);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,141 +40,139 @@ export default function HomePage() {
   }, [heroImages.length]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Hero Section */}
-      <section
-        className="relative min-h-[80vh] md:min-h-[90vh] flex items-center justify-center text-white transition-all duration-1000"
-        style={{
-          backgroundImage: `url(${heroImages[currentImage]})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
+      <section className="relative min-h-[80vh] flex items-center justify-center text-white overflow-hidden">
+        {/* Background image with fade */}
+        <motion.div
+          key={currentImage}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${heroImages[currentImage]})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/50" />
-        <div className="relative z-10 text-center px-4">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4">
+
+        {/* Content */}
+        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-3xl">
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4"
+          >
             Discover Your Next Favorite Book
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl mb-8 max-w-xl mx-auto">
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="text-base sm:text-lg md:text-xl mb-8"
+          >
             Browse thousands of books, articles, and resources anytime, anywhere.
-          </p>
+          </motion.p>
 
           {/* Search Bar */}
-          <div className="max-w-xl mx-auto bg-white rounded-full shadow-lg flex flex-col sm:flex-row overflow-hidden">
+          <motion.form
+            onSubmit={handleSearch}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="max-w-xl mx-auto bg-white/20 backdrop-blur-lg rounded-full shadow-lg flex flex-col sm:flex-row overflow-hidden"
+          >
             <input
               type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for books..."
-              className="flex-grow px-4 py-3 text-gray-800 outline-none"
+              className="flex-grow px-4 py-3 text-sm sm:text-base text-white placeholder:text-gray-300 outline-none bg-transparent"
             />
-            <button className="bg-black px-6 py-3 text-white">
+            <button
+              type="submit"
+              className="bg-black/70 px-6 py-3 text-sm sm:text-base font-medium text-white hover:bg-black/80 hover:scale-105 transition-transform"
+            >
               Search
             </button>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="mt-8 flex justify-center gap-4 flex-wrap">
-            <Link
-              href="/user/register"
-              className="bg-white text-gray-700 px-6 py-3 rounded-full shadow hover:bg-gray-100"
-            >
-              Join Now
-            </Link>
-            <Link
-              href="/books"
-              className="border border-white px-6 py-3 rounded-full hover:bg-white hover:text-gray-700"
-            >
-              Browse Books
-            </Link>
-          </div>
+          </motion.form>
         </div>
       </section>
 
-      {/* Popular Categories */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Left */}
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
-              Popular Categories
+      {/* Blurred Background Wrapper */}
+      <div className="relative">
+        {/* Background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://i.pinimg.com/736x/e3/2e/81/e32e81951afc545c70e9ab09f4374c39.jpg')",
+          }}
+        />
+        {/* Blur overlay */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-md" />
+
+        {/* Foreground Sections */}
+        <div className="relative z-10 space-y-16 sm:space-y-24 px-4 sm:px-6 lg:px-12">
+          {/* Categories Section */}
+          <motion.section
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <CategoriesSection />
+          </motion.section>
+
+          {/* About Section */}
+          <motion.section
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <AboutSection />
+          </motion.section>
+
+          {/* Titled Books Section */}
+          <motion.section
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <TitledBooks />
+          </motion.section>
+
+          {/* Call To Action */}
+          <motion.section
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            className="py-16 sm:py-20 text-center text-white"
+          >
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">
+              Join Thousands of Readers Worldwide
             </h2>
-             <p className="text-gray-600 leading-relaxed mb-6">
-        Explore our most visited book categories, hand-picked to match what
-        readers love the most. Whether you’re into science, fiction, or
-        biographies, there’s something for everyone.
-      </p>
-            <a
-        href="/categories"
-        className="inline-block bg-black text-white px-5 py-3 rounded-full shadow hover:bg-gray-800"
-      >
-        View All Categories
-      </a>
-          </div>
-
-          {/* Right - Circle */}
-          <div className="relative mx-auto w-[16rem] h-[16rem] sm:w-[20rem] sm:h-[20rem]">
-            {[
-              { name: "Science", img: "https://images.unsplash.com/photo-1628595351029-c2bf17511435?q=80&w=1802&auto=format&fit=crop" },
-              { name: "Technology", img: "https://plus.unsplash.com/premium_photo-1683120972279-87efe2ba252f?w=600&auto=format&fit=crop&q=60" },
-              { name: "History", img: "https://images.unsplash.com/photo-1582034438152-77bc94ffa6ae?w=600&auto=format&fit=crop&q=60" },
-              { name: "Fiction", img: "https://images.unsplash.com/photo-1626618012641-bfbca5a31239?w=600&auto=format&fit=crop&q=60" },
-              { name: "Biography", img: "https://images.unsplash.com/photo-1582739010387-0b49ea2adaf6?w=600&auto=format&fit=crop&q=60" },
-              { name: "Comics", img: "https://images.unsplash.com/photo-1620336655055-088d06e36bf0?w=600&auto=format&fit=crop&q=60" },
-            ].map((cat, i, arr) => {
-              const angle = (i / arr.length) * 2 * Math.PI;
-              const radius = 120;
-              const x = radius * Math.cos(angle);
-              const y = radius * Math.sin(angle);
-
-              return (
-                <div
-                  key={i}
-                  className="absolute flex flex-col items-center text-center transform -translate-x-1/2 -translate-y-1/2"
-                  style={{
-                    left: `calc(50% + ${x}px)`,
-                    top: `calc(50% + ${y}px)`,
-                  }}
-                >
-                  <img
-                    src={cat.img}
-                    alt={cat.name}
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shadow-md hover:scale-110 transition-transform"
-                  />
-                  <p className="mt-2 text-xs sm:text-sm font-medium text-gray-700">{cat.name}</p>
-                </div>
-              );
-            })}
-          </div>
+            <p className="text-gray-200 mb-8 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
+              Create a free account and start building your digital library today.
+            </p>
+            <Link
+              href="user/signup"
+              className="inline-block bg-white/20 backdrop-blur-md text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:bg-white/30 transition"
+            >
+              Get Started
+            </Link>
+          </motion.section>
         </div>
-      </section>
-<section>
-  {/* Featured Books */}
-
-      <FeaturedBooks />
-</section>
-      
-{/* About Us Section */}
-<section className="py-16 bg-white">
-  <div className="max-w-6xl mx-auto px-4 text-center">
-    <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
-      About Us
-    </h2>
-    <p className="text-gray-600 leading-relaxed mb-8">
-      We are passionate about connecting readers with the books they love.
-      From timeless classics to modern bestsellers, our library offers a
-      diverse range of materials for every kind of reader. Learn more about
-      our mission, values, and team.
-    </p>
-    <Link
-      href="/about"
-      className="inline-block bg-black text-white px-6 py-3 rounded-full shadow hover:bg-gray-800 transition-colors"
-    >
-      Learn More
-    </Link>
-  </div>
-</section>
-
-
-
+      </div>
     </div>
   );
 }
